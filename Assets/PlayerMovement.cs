@@ -17,12 +17,9 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
 
-    private Animator anim;
-
     // Start is called before the first frame update
     void Start()
     {
-        anim = GetComponentInChildren<Animator>();
     }
 
     // Update is called once per frame
@@ -39,16 +36,6 @@ public class PlayerMovement : MonoBehaviour
         float z = Input.GetAxis("Vertical");
 
         Vector3 move = transform.right * x + transform.forward * z;
-
-        if (move != Vector3.zero)
-        {
-            Walk();
-        }
-        else if (move == Vector3.zero)
-        {
-            Idle();
-        }
-
         controller.Move(move * speed * Time.deltaTime);
 
         if (Input.GetButtonDown("Jump") && isGrounded)
@@ -59,15 +46,5 @@ public class PlayerMovement : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
 
         controller.Move(velocity * Time.deltaTime);
-    }
-
-    private void Idle()
-    {
-        anim.SetFloat("Speed", 0, 0.1f, Time.deltaTime);
-    }
-
-    private void Walk()
-    {
-        anim.SetFloat("Speed", 1, 0.1f, Time.deltaTime);
     }
 }
