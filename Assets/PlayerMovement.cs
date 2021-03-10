@@ -17,9 +17,17 @@ public class PlayerMovement : MonoBehaviour
     Vector3 velocity;
     bool isGrounded;
 
+    private Animator anim;
+
+    private bool isFalling;
+
     // Start is called before the first frame update
     void Start()
     {
+        controller = GetComponent<CharacterController>();
+        anim = GetComponentInChildren<Animator>();
+        anim.SetBool("Moving", false);
+        isFalling = false;
     }
 
     // Update is called once per frame
@@ -40,11 +48,65 @@ public class PlayerMovement : MonoBehaviour
 
         if (Input.GetButtonDown("Jump") && isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+            Jump();
+        }
+
+        if (move == Vector3.zero)
+        {
+            Idle();
+        }
+        else if (move != Vector3.zero && !Input.GetKey(KeyCode.LeftShift))
+        {
+            Walk();
+        }
+        else if (move != Vector3.zero && Input.GetKey(KeyCode.LeftShift))
+        {
+            Run();
         }
 
         velocity.y += gravity * Time.deltaTime;
 
+        if (velocity.y < 0 && !isGrounded)
+        {
+            anim.SetInteger("Jumping", 2);
+            anim.SetTrigger("Jump");
+            isFalling = true;
+        }
+
+        if (velocity.y < 0 && (isFalling == true && isGrounded))
+        {
+            anim.SetInteger("Jumping", 0);
+            anim.SetTrigger("Jump");
+            isFalling = false;
+        }
+
         controller.Move(velocity * Time.deltaTime);
+    }
+
+    private void Idle()
+    {
+        anim.SetBool("Moving", false);
+        anim.SetFloat("Velocity", 0);
+    }
+
+    private void Walk()
+    {
+        speed = 6f;
+        anim.SetBool("Moving", true);
+        anim.SetFloat("Velocity", 0.65f);
+    }
+
+    private void Run()
+    {
+        speed = 12f;
+        anim.SetBool("Moving", true);
+        anim.SetFloat("Velocity", 1f);
+    }
+
+    private void Jump()
+    {
+        anim.SetInteger("Jumping", 1);
+        anim.SetTrigger("Jump");
+        velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
     }
 }
