@@ -40,11 +40,11 @@ GameObject:
   m_Component:
   - component: {fileID: 5193129768189549027}
   - component: {fileID: 5193129768197240381}
-  - component: {fileID: 5193129769594319313}
   - component: {fileID: 5193129769594319314}
   - component: {fileID: 5193129769594319315}
   - component: {fileID: 5193129769594319312}
   - component: {fileID: -8834648075756666414}
+  - component: {fileID: 5193129769594319313}
   m_Layer: 0
   m_Name: CharacterTest
   m_TagString: Untagged
@@ -90,24 +90,6 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
---- !u!143 &5193129769594319313
-CharacterController:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5193129768189838723}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Height: 2.6
-  m_Radius: 0.5
-  m_SlopeLimit: 45
-  m_StepOffset: 0.3
-  m_SkinWidth: 0.08
-  m_MinMoveDistance: 0.001
-  m_Center: {x: 0, y: 0, z: 0}
 --- !u!114 &5193129769594319314
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -208,6 +190,24 @@ MonoBehaviour:
   visible: 0
   m_AssetId: 
   hasSpawned: 0
+--- !u!143 &5193129769594319313
+CharacterController:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5193129768189838723}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Height: 2.6
+  m_Radius: 0.5
+  m_SlopeLimit: 45
+  m_StepOffset: 0.3
+  m_SkinWidth: 0.08
+  m_MinMoveDistance: 0.001
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &5193129768189838725
 GameObject:
   m_ObjectHideFlags: 0

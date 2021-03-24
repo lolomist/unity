@@ -9,10 +9,17 @@ public class PlayerMovement : MonoBehaviour
     public float speed = 12f;
     public float gravity = -9.81f;
     public float jumpHeight = 3f;
+    public int attackDelayAmount = 4;
+    public float projectileSpeed = 0.00001f;
+    public float shootingDelay = 0.6f;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
+    public BoxCollider rightHandColliderComponent;
+    public BoxCollider LeftHandboxColliderComponent;
+    public GameObject projectile;
+    public GameObject camera;
 
     Vector3 velocity;
     bool isGrounded;
@@ -20,6 +27,8 @@ public class PlayerMovement : MonoBehaviour
     private Animator anim;
 
     private bool isFalling;
+    private bool isAttacking;
+    protected float attackTimer;
 
     // Start is called before the first frame update
     void Start()
@@ -28,11 +37,23 @@ public class PlayerMovement : MonoBehaviour
         anim = GetComponentInChildren<Animator>();
         anim.SetBool("Moving", false);
         isFalling = false;
+        isAttacking = false;
     }
 
     // Update is called once per frame
     void Update()
     {
+        attackTimer += Time.deltaTime;
+
+        if (attackTimer >= attackDelayAmount)
+        {
+            attackTimer = 0f;
+            // For every DelayAmount in seconds it will reset the Attack
+            isAttacking = false; 
+            rightHandColliderComponent.enabled = false;
+            LeftHandboxColliderComponent.enabled = false;
+        }
+
         isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
 
         if (isGrounded && velocity.y < 0)
@@ -51,7 +72,18 @@ public class PlayerMovement : MonoBehaviour
             Jump();
         }
 
-        if (move == Vector3.zero)
+        if (Input.GetMouseButtonDown(0))
+        {
+            if (isAttacking == false) {
+                print("attaque");
+                isAttacking = true;
+                rightHandColliderComponent.enabled = true;
+                LeftHandboxColliderComponent.enabled = true;
+                anim.SetTrigger("Attack");
+                StartCoroutine(ExecuteAfterTime(shootingDelay));
+            }
+        }
+        else if (move == Vector3.zero)
         {
             Idle();
         }
@@ -108,5 +140,16 @@ public class PlayerMovement : MonoBehaviour
         anim.SetInteger("Jumping", 1);
         anim.SetTrigger("Jump");
         velocity.y = Mathf.Sqrt(jumpHeight * -2f * gravity);
+    }
+
+    IEnumerator ExecuteAfterTime(float time)
+    {
+        yield return new WaitForSeconds(time);
+ 
+        // Code to execute after the delay
+        Vector3 spawnPosition = this.transform.position + (this.transform.forward * 4);
+        spawnPosition.y += 2f;
+        GameObject projectil = Instantiate(projectile, spawnPosition, this.transform.rotation) as GameObject;
+        projectil.GetComponent<Rigidbody>().AddForce(camera.transform.forward * projectileSpeed);
     }
 }
