@@ -1229,6 +1229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   myCollider: {fileID: 718672729280061160}
   respawnTime: 30
+  player: {fileID: 718672729280061200}
 --- !u!1 &718672729320754403
 GameObject:
   m_ObjectHideFlags: 0
