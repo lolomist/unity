@@ -3,12 +3,15 @@
 [RequireComponent(typeof(Rigidbody))]
 public class PlayerMotor : MonoBehaviour
 {
+    public Camera cam;
+
     [SerializeField]
-    private Camera cam;
+    private GameObject projectile;
 
     private Vector3 velocity;
     private Vector3 rotation;
     private Vector3 cameraRotation;
+    private Vector3 jumpVelocity;
 
     private Rigidbody rb;
 
@@ -32,6 +35,11 @@ public class PlayerMotor : MonoBehaviour
         cameraRotation = _cameraRotation;
     }
 
+    public void ApplyJump(Vector3 _jumpVelocity)
+    {
+        jumpVelocity = _jumpVelocity;
+    }
+
     private void FixedUpdate()
     {
         PerformMovement();
@@ -43,6 +51,11 @@ public class PlayerMotor : MonoBehaviour
         if(velocity != Vector3.zero)
         {
             rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
+        }
+
+        if (jumpVelocity != Vector3.zero)
+        {
+            rb.AddForce(jumpVelocity * Time.fixedDeltaTime, ForceMode.Acceleration);
         }
     }
 
