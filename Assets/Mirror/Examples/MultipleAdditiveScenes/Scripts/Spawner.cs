@@ -3,24 +3,26 @@ using UnityEngine.SceneManagement;
 
 namespace Mirror.Examples.MultipleAdditiveScenes
 {
-    internal class Spawner
+    public class Spawner : NetworkBehaviour
     {
-        internal static void InitialSpawn(Scene scene)
-        {
-            if (!NetworkServer.active) return;
+        public NetworkIdentity prizePrefab;
 
+        public override void OnStartServer()
+        {
             for (int i = 0; i < 10; i++)
-                SpawnReward(scene);
+                SpawnPrize();
         }
 
-        internal static void SpawnReward(Scene scene)
+        public void SpawnPrize()
         {
-            if (!NetworkServer.active) return;
-
             Vector3 spawnPosition = new Vector3(Random.Range(-19, 20), 1, Random.Range(-19, 20));
-            GameObject reward = Object.Instantiate(((MultiSceneNetManager)NetworkManager.singleton).rewardPrefab, spawnPosition, Quaternion.identity);
-            SceneManager.MoveGameObjectToScene(reward, scene);
-            NetworkServer.Spawn(reward);
+
+            // spawn as child of the spawner that's already in the additive scene at 0,0,0 so we don't have to move it
+            GameObject newPrize = Instantiate(prizePrefab.gameObject, spawnPosition, Quaternion.identity, transform);
+            Reward reward = newPrize.gameObject.GetComponent<Reward>();
+            reward.spawner = this;
+
+            NetworkServer.Spawn(newPrize);
         }
     }
 }

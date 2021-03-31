@@ -8,28 +8,21 @@ namespace Mirror.Weaver
 {
     public static class Writers
     {
-        static Dictionary<TypeReference, MethodReference> writeFuncs;
+        static Dictionary<string, MethodReference> writeFuncs;
 
         public static void Init()
         {
-            writeFuncs = new Dictionary<TypeReference, MethodReference>(new TypeReferenceComparer());
+            writeFuncs = new Dictionary<string, MethodReference>();
         }
 
         public static void Register(TypeReference dataType, MethodReference methodReference)
         {
-            if (writeFuncs.ContainsKey(dataType))
-            {
-                Weaver.Warning($"Registering a Write method for {dataType.FullName} when one already exists", methodReference);
-            }
-
-            // we need to import type when we Initialize Writers so import here in case it is used anywhere else
-            TypeReference imported = Weaver.CurrentAssembly.MainModule.ImportReference(dataType);
-            writeFuncs[imported] = methodReference;
+            writeFuncs[dataType.FullName] = methodReference;
         }
 
         static void RegisterWriteFunc(TypeReference typeReference, MethodDefinition newWriterFunc)
         {
-            Register(typeReference, newWriterFunc);
+            writeFuncs[typeReference.FullName] = newWriterFunc;
 
             Weaver.WeaveLists.generateContainerClass.Methods.Add(newWriterFunc);
         }
@@ -39,10 +32,11 @@ namespace Mirror.Weaver
         /// <para>This method is recursive</para>
         /// </summary>
         /// <param name="variable"></param>
+        /// <param name="recursionCount"></param>
         /// <returns>Returns <see cref="MethodReference"/> or null</returns>
         public static MethodReference GetWriteFunc(TypeReference variable)
         {
-            if (writeFuncs.TryGetValue(variable, out MethodReference foundFunc))
+            if (writeFuncs.TryGetValue(variable.FullName, out MethodReference foundFunc))
             {
                 return foundFunc;
             }
@@ -51,8 +45,7 @@ namespace Mirror.Weaver
                 // this try/catch will be removed in future PR and make `GetWriteFunc` throw instead
                 try
                 {
-                    TypeReference importedVariable = Weaver.CurrentAssembly.MainModule.ImportReference(variable);
-                    return GenerateWriter(importedVariable);
+                    return GenerateWriter(variable);
                 }
                 catch (GenerateWriterException e)
                 {
@@ -63,7 +56,7 @@ namespace Mirror.Weaver
         }
 
         /// <exception cref="GenerateWriterException">Throws when writer could not be generated for type</exception>
-        static MethodReference GenerateWriter(TypeReference variableReference)
+        static MethodDefinition GenerateWriter(TypeReference variableReference)
         {
             if (variableReference.IsByReference)
             {
@@ -71,7 +64,7 @@ namespace Mirror.Weaver
             }
 
             // Arrays are special, if we resolve them, we get the element type,
-            // e.g. int[] resolves to int
+            // eg int[] resolves to int
             // therefore process this before checks below
             if (variableReference.IsArray)
             {
@@ -103,11 +96,6 @@ namespace Mirror.Weaver
                 TypeReference elementType = genericInstance.GenericArguments[0];
 
                 return GenerateCollectionWriter(variableReference, elementType, nameof(NetworkWriterExtensions.WriteList));
-            }
-
-            if (variableReference.IsDerivedFrom<NetworkBehaviour>())
-            {
-                return GetNetworkBehaviourWriter(variableReference);
             }
 
             // check for invalid types
@@ -145,25 +133,7 @@ namespace Mirror.Weaver
             return GenerateClassOrStructWriterFunction(variableReference);
         }
 
-        static MethodReference GetNetworkBehaviourWriter(TypeReference variableReference)
-        {
-            // all NetworkBehaviours can use the same write function
-            if (writeFuncs.TryGetValue(WeaverTypes.Import<NetworkBehaviour>(), out MethodReference func))
-            {
-                // register function so it is added to writer<T>
-                // use Register instead of RegisterWriteFunc because this is not a generated function
-                Register(variableReference, func);
-
-                return func;
-            }
-            else
-            {
-                // this exception only happens if mirror is missing the WriteNetworkBehaviour method
-                throw new MissingMethodException($"Could not find writer for NetworkBehaviour");
-            }
-        }
-
-        static MethodDefinition GenerateEnumWriteFunc(TypeReference variable)
+        private static MethodDefinition GenerateEnumWriteFunc(TypeReference variable)
         {
             MethodDefinition writerFunc = GenerateWriterFunc(variable);
 
@@ -171,15 +141,15 @@ namespace Mirror.Weaver
 
             MethodReference underlyingWriter = GetWriteFunc(variable.Resolve().GetEnumUnderlyingType());
 
-            worker.Emit(OpCodes.Ldarg_0);
-            worker.Emit(OpCodes.Ldarg_1);
-            worker.Emit(OpCodes.Call, underlyingWriter);
+            worker.Append(worker.Create(OpCodes.Ldarg_0));
+            worker.Append(worker.Create(OpCodes.Ldarg_1));
+            worker.Append(worker.Create(OpCodes.Call, underlyingWriter));
 
-            worker.Emit(OpCodes.Ret);
+            worker.Append(worker.Create(OpCodes.Ret));
             return writerFunc;
         }
 
-        static MethodDefinition GenerateWriterFunc(TypeReference variable)
+        private static MethodDefinition GenerateWriterFunc(TypeReference variable)
         {
             string functionName = "_Write_" + variable.FullName;
             // create new writer for this type
@@ -190,7 +160,7 @@ namespace Mirror.Weaver
                     WeaverTypes.Import(typeof(void)));
 
             writerFunc.Parameters.Add(new ParameterDefinition("writer", ParameterAttributes.None, WeaverTypes.Import<NetworkWriter>()));
-            writerFunc.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, variable));
+            writerFunc.Parameters.Add(new ParameterDefinition("value", ParameterAttributes.None, Weaver.CurrentAssembly.MainModule.ImportReference(variable)));
             writerFunc.Body.InitLocals = true;
 
             RegisterWriteFunc(variable, writerFunc);
@@ -209,11 +179,11 @@ namespace Mirror.Weaver
             if (!WriteAllFields(variable, worker))
                 return null;
 
-            worker.Emit(OpCodes.Ret);
+            worker.Append(worker.Create(OpCodes.Ret));
             return writerFunc;
         }
 
-        static void WriteNullCheck(ILProcessor worker)
+        private static void WriteNullCheck(ILProcessor worker)
         {
             // if (value == null)
             // {
@@ -223,18 +193,18 @@ namespace Mirror.Weaver
             //
 
             Instruction labelNotNull = worker.Create(OpCodes.Nop);
-            worker.Emit(OpCodes.Ldarg_1);
-            worker.Emit(OpCodes.Brtrue, labelNotNull);
-            worker.Emit(OpCodes.Ldarg_0);
-            worker.Emit(OpCodes.Ldc_I4_0);
-            worker.Emit(OpCodes.Call, GetWriteFunc(WeaverTypes.Import<bool>()));
-            worker.Emit(OpCodes.Ret);
+            worker.Append(worker.Create(OpCodes.Ldarg_1));
+            worker.Append(worker.Create(OpCodes.Brtrue, labelNotNull));
+            worker.Append(worker.Create(OpCodes.Ldarg_0));
+            worker.Append(worker.Create(OpCodes.Ldc_I4_0));
+            worker.Append(worker.Create(OpCodes.Call, GetWriteFunc(WeaverTypes.Import<bool>())));
+            worker.Append(worker.Create(OpCodes.Ret));
             worker.Append(labelNotNull);
 
             // write.WriteBoolean(true);
-            worker.Emit(OpCodes.Ldarg_0);
-            worker.Emit(OpCodes.Ldc_I4_1);
-            worker.Emit(OpCodes.Call, GetWriteFunc(WeaverTypes.Import<bool>()));
+            worker.Append(worker.Create(OpCodes.Ldarg_0));
+            worker.Append(worker.Create(OpCodes.Ldc_I4_1));
+            worker.Append(worker.Create(OpCodes.Call, GetWriteFunc(WeaverTypes.Import<bool>())));
         }
 
         /// <summary>
@@ -255,10 +225,10 @@ namespace Mirror.Weaver
                 FieldReference fieldRef = Weaver.CurrentAssembly.MainModule.ImportReference(field);
 
                 fields++;
-                worker.Emit(OpCodes.Ldarg_0);
-                worker.Emit(OpCodes.Ldarg_1);
-                worker.Emit(OpCodes.Ldfld, fieldRef);
-                worker.Emit(OpCodes.Call, writeFunc);
+                worker.Append(worker.Create(OpCodes.Ldarg_0));
+                worker.Append(worker.Create(OpCodes.Ldarg_1));
+                worker.Append(worker.Create(OpCodes.Ldfld, fieldRef));
+                worker.Append(worker.Create(OpCodes.Call, writeFunc));
             }
 
             return true;
@@ -290,12 +260,12 @@ namespace Mirror.Weaver
             // reader.WriteArray<T>(array);
 
             ILProcessor worker = writerFunc.Body.GetILProcessor();
-            worker.Emit(OpCodes.Ldarg_0); // writer
-            worker.Emit(OpCodes.Ldarg_1); // collection
+            worker.Append(worker.Create(OpCodes.Ldarg_0)); // writer
+            worker.Append(worker.Create(OpCodes.Ldarg_1)); // collection
 
-            worker.Emit(OpCodes.Call, methodRef); // WriteArray
+            worker.Append(worker.Create(OpCodes.Call, methodRef)); // WriteArray
 
-            worker.Emit(OpCodes.Ret);
+            worker.Append(worker.Create(OpCodes.Ret));
 
             return writerFunc;
         }
@@ -316,22 +286,22 @@ namespace Mirror.Weaver
             TypeReference actionRef = module.ImportReference(typeof(Action<,>));
             MethodReference actionConstructorRef = module.ImportReference(typeof(Action<,>).GetConstructors()[0]);
 
-            foreach (KeyValuePair<TypeReference, MethodReference> kvp in writeFuncs)
+            foreach (MethodReference writerMethod in writeFuncs.Values)
             {
-                TypeReference targetType = kvp.Key;
-                MethodReference writeFunc = kvp.Value;
+
+                TypeReference dataType = writerMethod.Parameters[1].ParameterType;
 
                 // create a Action<NetworkWriter, T> delegate
-                worker.Emit(OpCodes.Ldnull);
-                worker.Emit(OpCodes.Ldftn, writeFunc);
-                GenericInstanceType actionGenericInstance = actionRef.MakeGenericInstanceType(networkWriterRef, targetType);
+                worker.Append(worker.Create(OpCodes.Ldnull));
+                worker.Append(worker.Create(OpCodes.Ldftn, writerMethod));
+                GenericInstanceType actionGenericInstance = actionRef.MakeGenericInstanceType(networkWriterRef, dataType);
                 MethodReference actionRefInstance = actionConstructorRef.MakeHostInstanceGeneric(actionGenericInstance);
-                worker.Emit(OpCodes.Newobj, actionRefInstance);
+                worker.Append(worker.Create(OpCodes.Newobj, actionRefInstance));
 
                 // save it in Writer<T>.write
-                GenericInstanceType genericInstance = genericWriterClassRef.MakeGenericInstanceType(targetType);
+                GenericInstanceType genericInstance = genericWriterClassRef.MakeGenericInstanceType(dataType);
                 FieldReference specializedField = fieldRef.SpecializeField(genericInstance);
-                worker.Emit(OpCodes.Stsfld, specializedField);
+                worker.Append(worker.Create(OpCodes.Stsfld, specializedField));
             }
         }
 

@@ -24,8 +24,16 @@ namespace Mirror.Weaver
 
         // array segment
         public static MethodReference ArraySegmentConstructorReference;
+        public static MethodReference ArraySegmentArrayReference;
+        public static MethodReference ArraySegmentOffsetReference;
+        public static MethodReference ArraySegmentCountReference;
 
-        // syncvar
+        // list
+        public static MethodReference ListConstructorReference;
+        public static MethodReference ListCountReference;
+        public static MethodReference ListGetItemReference;
+        public static MethodReference ListAddReference;
+
         public static MethodReference syncVarEqualReference;
         public static MethodReference syncVarNetworkIdentityEqualReference;
         public static MethodReference syncVarGameObjectEqualReference;
@@ -36,11 +44,9 @@ namespace Mirror.Weaver
         public static MethodReference getSyncVarGameObjectReference;
         public static MethodReference setSyncVarNetworkIdentityReference;
         public static MethodReference getSyncVarNetworkIdentityReference;
-        public static MethodReference syncVarNetworkBehaviourEqualReference;
-        public static MethodReference setSyncVarNetworkBehaviourReference;
-        public static MethodReference getSyncVarNetworkBehaviourReference;
         public static MethodReference registerCommandDelegateReference;
         public static MethodReference registerRpcDelegateReference;
+        public static MethodReference getTypeReference;
         public static MethodReference getTypeFromHandleReference;
         public static MethodReference logErrorReference;
         public static MethodReference logWarningReference;
@@ -48,9 +54,7 @@ namespace Mirror.Weaver
         public static MethodReference sendRpcInternal;
         public static MethodReference sendTargetRpcInternal;
 
-        public static MethodReference readNetworkBehaviourGeneric;
-
-        static AssemblyDefinition currentAssembly;
+        private static AssemblyDefinition currentAssembly;
 
         public static TypeReference Import<T>() => Import(typeof(T));
 
@@ -62,9 +66,16 @@ namespace Mirror.Weaver
             WeaverTypes.currentAssembly = currentAssembly;
 
             TypeReference ArraySegmentType = Import(typeof(ArraySegment<>));
+            ArraySegmentArrayReference = Resolvers.ResolveProperty(ArraySegmentType, currentAssembly, "Array");
+            ArraySegmentCountReference = Resolvers.ResolveProperty(ArraySegmentType, currentAssembly, "Count");
+            ArraySegmentOffsetReference = Resolvers.ResolveProperty(ArraySegmentType, currentAssembly, "Offset");
             ArraySegmentConstructorReference = Resolvers.ResolveMethod(ArraySegmentType, currentAssembly, ".ctor");
 
             TypeReference ListType = Import(typeof(System.Collections.Generic.List<>));
+            ListCountReference = Resolvers.ResolveProperty(ListType, currentAssembly, "Count");
+            ListGetItemReference = Resolvers.ResolveMethod(ListType, currentAssembly, "get_Item");
+            ListAddReference = Resolvers.ResolveMethod(ListType, currentAssembly, "Add");
+            ListConstructorReference = Resolvers.ResolveMethod(ListType, currentAssembly, ".ctor");
 
             TypeReference NetworkServerType = Import(typeof(NetworkServer));
             NetworkServerGetActive = Resolvers.ResolveMethod(NetworkServerType, currentAssembly, "get_active");
@@ -103,28 +114,11 @@ namespace Mirror.Weaver
             getSyncVarGameObjectReference = Resolvers.ResolveMethod(NetworkBehaviourType, currentAssembly, "GetSyncVarGameObject");
             setSyncVarNetworkIdentityReference = Resolvers.ResolveMethod(NetworkBehaviourType, currentAssembly, "SetSyncVarNetworkIdentity");
             getSyncVarNetworkIdentityReference = Resolvers.ResolveMethod(NetworkBehaviourType, currentAssembly, "GetSyncVarNetworkIdentity");
-            syncVarNetworkBehaviourEqualReference = Resolvers.ResolveMethod(NetworkBehaviourType, currentAssembly, "SyncVarNetworkBehaviourEqual");
-            setSyncVarNetworkBehaviourReference = Resolvers.ResolveMethod(NetworkBehaviourType, currentAssembly, "SetSyncVarNetworkBehaviour");
-            getSyncVarNetworkBehaviourReference = Resolvers.ResolveMethod(NetworkBehaviourType, currentAssembly, "GetSyncVarNetworkBehaviour");
-
             registerCommandDelegateReference = Resolvers.ResolveMethod(RemoteCallHelperType, currentAssembly, "RegisterCommandDelegate");
             registerRpcDelegateReference = Resolvers.ResolveMethod(RemoteCallHelperType, currentAssembly, "RegisterRpcDelegate");
-
             TypeReference unityDebug = Import(typeof(UnityEngine.Debug));
-            // these have multiple methods with same name, so need to check parameters too
-            logErrorReference = Resolvers.ResolveMethod(unityDebug, currentAssembly, (md) =>
-            {
-                return md.Name == "LogError" &&
-                    md.Parameters.Count == 1 &&
-                    md.Parameters[0].ParameterType.FullName == typeof(object).FullName;
-            });
-            logWarningReference = Resolvers.ResolveMethod(unityDebug, currentAssembly, (md) =>
-            {
-                return md.Name == "LogWarning" &&
-                    md.Parameters.Count == 1 &&
-                    md.Parameters[0].ParameterType.FullName == typeof(object).FullName;
-
-            });
+            logErrorReference = Resolvers.ResolveMethod(unityDebug, currentAssembly, "LogError");
+            logWarningReference = Resolvers.ResolveMethod(unityDebug, currentAssembly, "LogWarning");
 
             TypeReference typeType = Import(typeof(Type));
             getTypeFromHandleReference = Resolvers.ResolveMethod(typeType, currentAssembly, "GetTypeFromHandle");
@@ -133,13 +127,6 @@ namespace Mirror.Weaver
             sendTargetRpcInternal = Resolvers.ResolveMethod(NetworkBehaviourType, currentAssembly, "SendTargetRPCInternal");
 
             InitSyncObjectReference = Resolvers.ResolveMethod(NetworkBehaviourType, currentAssembly, "InitSyncObject");
-
-            TypeReference readerExtensions = Import(typeof(NetworkReaderExtensions));
-            readNetworkBehaviourGeneric = Resolvers.ResolveMethod(readerExtensions, currentAssembly, (md =>
-            {
-                return md.Name == nameof(NetworkReaderExtensions.ReadNetworkBehaviour) &&
-                    md.HasGenericParameters;
-            }));
         }
     }
 }

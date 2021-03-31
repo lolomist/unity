@@ -8,10 +8,6 @@ namespace Mirror.Examples.MultipleAdditiveScenes
     [AddComponentMenu("")]
     public class MultiSceneNetManager : NetworkManager
     {
-        [Header("Spawner Setup")]
-        [Tooltip("Reward Prefab for the Spawner")]
-        public GameObject rewardPrefab;
-
         [Header("MultiScene Setup")]
         public int instances = 3;
 
@@ -33,6 +29,9 @@ namespace Mirror.Examples.MultipleAdditiveScenes
         /// <param name="conn">Connection from client.</param>
         public override void OnServerAddPlayer(NetworkConnection conn)
         {
+            // increment the index before adding the player, so first player starts at 1
+            clientIndex++;
+
             StartCoroutine(OnServerAddPlayerDelayed(conn));
         }
 
@@ -52,8 +51,6 @@ namespace Mirror.Examples.MultipleAdditiveScenes
             playerScore.playerNumber = clientIndex;
             playerScore.scoreIndex = clientIndex / subScenes.Count;
             playerScore.matchIndex = clientIndex % subScenes.Count;
-
-            clientIndex++;
 
             if (subScenes.Count > 0)
                 SceneManager.MoveGameObjectToScene(conn.identity.gameObject, subScenes[clientIndex % subScenes.Count]);
@@ -80,10 +77,7 @@ namespace Mirror.Examples.MultipleAdditiveScenes
             for (int index = 1; index <= instances; index++)
             {
                 yield return SceneManager.LoadSceneAsync(gameScene, new LoadSceneParameters { loadSceneMode = LoadSceneMode.Additive, localPhysicsMode = LocalPhysicsMode.Physics3D });
-
-                Scene newScene = SceneManager.GetSceneAt(index);
-                subScenes.Add(newScene);
-                Spawner.InitialSpawn(newScene);
+                subScenes.Add(SceneManager.GetSceneAt(index));
             }
 
             subscenesLoaded = true;
@@ -96,7 +90,6 @@ namespace Mirror.Examples.MultipleAdditiveScenes
         {
             NetworkServer.SendToAll(new SceneMessage { sceneName = gameScene, sceneOperation = SceneOperation.UnloadAdditive });
             StartCoroutine(ServerUnloadSubScenes());
-            clientIndex = 0;
         }
 
         // Unload the subScenes and unused assets and clear the subScenes list.
@@ -106,7 +99,6 @@ namespace Mirror.Examples.MultipleAdditiveScenes
                 yield return SceneManager.UnloadSceneAsync(subScenes[index]);
 
             subScenes.Clear();
-            subscenesLoaded = false;
 
             yield return Resources.UnloadUnusedAssets();
         }
