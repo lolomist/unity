@@ -42,6 +42,16 @@ public class PlayerSetup : NetworkBehaviour
         }
     }
 
+    public override void OnStartClient()
+    {
+        base.OnStartClient();
+
+        string netId = GetComponent<NetworkIdentity>().netId.ToString();
+        PlayerController player = GetComponent<PlayerController>();
+
+        GameManager.RegisterPlayer(netId, player);
+    }
+
     private void OnDisable()
     {
         Destroy(playerUIInstance);
@@ -50,5 +60,7 @@ public class PlayerSetup : NetworkBehaviour
         {
             sceneCamera.gameObject.SetActive(true);
         }
+
+        GameManager.UnregisterPlayer(transform.name);
     }
 }

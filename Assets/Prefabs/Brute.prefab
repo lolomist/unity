@@ -116,6 +116,7 @@ GameObject:
   - component: {fileID: -8810823532768146076}
   - component: {fileID: -5741177940946843334}
   - component: {fileID: 1239022655981264655}
+  - component: {fileID: 1017911550416093210}
   m_Layer: 0
   m_Name: Brute
   m_TagString: Player
@@ -463,8 +464,22 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  roundTime: 30
+  roundTime: 15
   WinScreenTime: 10
+  WinUIPrefab: {fileID: 3169031592949543024, guid: a0d90503bc6253148860fa5cdcf684c0,
+    type: 3}
+--- !u!114 &1017911550416093210
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718672729280061200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ecde2b259e98e2e46afc897702462fd8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &783438008059557298
 GameObject:
   m_ObjectHideFlags: 0

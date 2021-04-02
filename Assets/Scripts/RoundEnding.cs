@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
+using System.Linq;
+using UnityEngine.SceneManagement;
 
 public class RoundEnding : NetworkBehaviour
 {
@@ -10,6 +12,13 @@ public class RoundEnding : NetworkBehaviour
 
     [SerializeField]
     private float WinScreenTime = 10f;
+
+    [SerializeField]
+    private GameObject WinUIPrefab;
+    private GameObject WinUIInstance;
+
+    [SerializeField]
+    private int sceneNumbers = 2;
 
     // Start is called before the first frame update
     void Start()
@@ -44,6 +53,9 @@ public class RoundEnding : NetworkBehaviour
     [Command]
     void EndRound()
     {
+        // Delete the entities
+        DeleteEntities();
+
         // Display of the winner of the round
         DisplayRoundWinner();
         StartCoroutine(RoundWinnerTextTimer(WinScreenTime));
@@ -52,6 +64,30 @@ public class RoundEnding : NetworkBehaviour
     [ClientRpc]
     void DisplayRoundWinner()
     {
+        // On regarde qui est le gagnant
+        Dictionary<string, PlayerController> players = GameManager.GetPlayers();
+        Dictionary<string, PlayerController> winners = new Dictionary<string, PlayerController>();
+        int max = 10000;
+
+        for (int i = 0; i < players.Count; i++) {
+            if (max == players.Values.ElementAt(i).GetScore())
+                winners.Add(players.Keys.ElementAt(i), players.Values.ElementAt(i));
+            if (max > players.Values.ElementAt(i).GetScore()) {
+                max = players.Values.ElementAt(i).GetScore();
+                winners.Clear();
+                winners.Add(players.Keys.ElementAt(i), players.Values.ElementAt(i));
+            }
+        }
+
+        // UI du winner du fin de round
+        WinUIInstance = Instantiate(WinUIPrefab);
+        WinUI ui = WinUIInstance.GetComponent<WinUI>();
+        if (ui == null)
+            Debug.LogError("Pas de component WinUI sur WinUIInstance");
+        else {
+            ui.SetController(GetComponent<PlayerController>());
+            ui.DisplayWinner(winners);
+        }
         Debug.Log("Display of the winner of the round");
     }
 
@@ -60,9 +96,6 @@ public class RoundEnding : NetworkBehaviour
         yield return new WaitForSeconds(time);
  
         Debug.Log("Winner screen ended");
-        
-        // Delete the entities
-        DeleteEntities();
 
         // Restart sequence of a new round
         RestartRound();
@@ -71,7 +104,9 @@ public class RoundEnding : NetworkBehaviour
     [ClientRpc]
     void DeleteEntities()
     {
-        Debug.Log("Deleting the entities");
+        //Debug.Log("Deleting the entities");
+
+        //Destroy(WinUIInstance);
 
         GameObject[] objects = GameObject.FindGameObjectsWithTag("Projectile");
 
@@ -79,11 +114,15 @@ public class RoundEnding : NetworkBehaviour
             Destroy(objects[i]);
     }
 
-    [Command]
+    [ClientRpc]
     void RestartRound()
     {
+        if (SceneManager.GetActiveScene().buildIndex == sceneNumbers)
+            SceneManager.LoadScene(1);
+        else
+            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
         Debug.Log("Restarting the round");
-        StartRound();
+        //StartRound();
     }
 
 }
