@@ -1,10 +1,15 @@
 ﻿using UnityEngine;
 using Mirror;
 
+[RequireComponent(typeof(PlayerController))]
 public class PlayerSetup : NetworkBehaviour
 {
     [SerializeField]
     Behaviour[] componentsToDisable;
+
+    [SerializeField]
+    private GameObject playerUIPrefab;
+    private GameObject playerUIInstance;
 
     Camera sceneCamera;
 
@@ -26,11 +31,21 @@ public class PlayerSetup : NetworkBehaviour
                 sceneCamera.gameObject.SetActive(false);
                 Cursor.lockState = CursorLockMode.Locked;
             }
+
+            // UI du joueur
+            playerUIInstance = Instantiate(playerUIPrefab);
+            PlayerUI ui = playerUIInstance.GetComponent<PlayerUI>();
+            if (ui == null)
+                Debug.LogError("Pas de component PlayerUI sur playerUIInstance");
+            else
+                ui.SetController(GetComponent<PlayerController>());
         }
     }
 
     private void OnDisable()
     {
+        Destroy(playerUIInstance);
+
         if(sceneCamera != null)
         {
             sceneCamera.gameObject.SetActive(true);

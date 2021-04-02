@@ -114,6 +114,8 @@ GameObject:
   - component: {fileID: 6741956282715546325}
   - component: {fileID: 5877721279408669299}
   - component: {fileID: -8810823532768146076}
+  - component: {fileID: -5741177940946843334}
+  - component: {fileID: 1239022655981264655}
   m_Layer: 0
   m_Name: Brute
   m_TagString: Player
@@ -388,7 +390,7 @@ MonoBehaviour:
   groundMask:
     serializedVersion: 2
     m_Bits: 256
-  jumpForce: 20000
+  jumpForce: 40000
   jointSpring: 20
   jointMaxForce: 50
 --- !u!114 &5877721279408669299
@@ -410,6 +412,8 @@ MonoBehaviour:
   - {fileID: 6741956282715546325}
   - {fileID: 2147715911369091888}
   - {fileID: 2977779863608704970}
+  playerUIPrefab: {fileID: 6573166433234914415, guid: 801f2db59126a2445abb9938c0a4bbc2,
+    type: 3}
 --- !u!114 &-8810823532768146076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -433,6 +437,34 @@ MonoBehaviour:
     type: 3}
   rightHandColliderComponent: {fileID: 8301068284540532722}
   LeftHandboxColliderComponent: {fileID: 5632515407404216995}
+--- !u!114 &-5741177940946843334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718672729280061200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ebfbfbaefaf1e24692b11494c44f257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1239022655981264655
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718672729280061200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 04981dbb6cc89f7449cbb288210a5c28, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  roundTime: 30
+  WinScreenTime: 10
 --- !u!1 &783438008059557298
 GameObject:
   m_ObjectHideFlags: 0

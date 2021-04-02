@@ -44,6 +44,7 @@ public class PlayerController : MonoBehaviour
     private ConfigurableJoint joint;
     private bool isGrounded;
     private bool isFalling;
+    private int deathNumber;
 
     private void Start()
     {
@@ -52,6 +53,7 @@ public class PlayerController : MonoBehaviour
         SetJointSettings(jointSpring);
         animator.SetBool("Moving", false);
         isFalling = false;
+        deathNumber = 0;
     }
 
     private void Update()
@@ -128,7 +130,7 @@ public class PlayerController : MonoBehaviour
 
     private void Jump()
     {
-        Debug.Log("Jumping");
+        //Debug.Log("Jumping");
         animator.SetInteger("Jumping", 1);
         netAnim.SetTrigger("Jump");
         SetJointSettings(0f);
@@ -153,5 +155,15 @@ public class PlayerController : MonoBehaviour
     private void SetJointSettings(float _jointSpring)
     {
         joint.yDrive = new JointDrive { positionSpring = _jointSpring, maximumForce = jointMaxForce };
+    }
+
+    public int GetScore()
+    {
+        return deathNumber;
+    }
+
+    public void addDeath()
+    {
+        deathNumber++;
     }
 }
