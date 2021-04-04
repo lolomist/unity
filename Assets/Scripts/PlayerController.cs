@@ -100,7 +100,7 @@ public class PlayerController : MonoBehaviour
 
         motor.ApplyJump(jumpVelocity);
 
-        if (joint.yDrive.positionSpring == jointSpring && !isGrounded)
+        if (joint.yDrive.positionSpring == jointSpring && (isFalling == false && !isGrounded))
             Fall();
 
         if (joint.yDrive.positionSpring == jointSpring && (isFalling == true && isGrounded))
