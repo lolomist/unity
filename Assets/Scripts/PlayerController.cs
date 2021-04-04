@@ -40,6 +40,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private float jointMaxForce = 50f;
 
+    [SerializeField]
+    public Renderer mesh; 
+
     private PlayerMotor motor;
     private ConfigurableJoint joint;
     private bool isGrounded;

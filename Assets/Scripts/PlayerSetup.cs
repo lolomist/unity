@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Collections.Generic;
 using Mirror;
 
 [RequireComponent(typeof(PlayerController))]
@@ -10,6 +11,10 @@ public class PlayerSetup : NetworkBehaviour
     [SerializeField]
     private GameObject playerUIPrefab;
     private GameObject playerUIInstance;
+
+    private Color c;
+    [SerializeField]
+    private List<Color> TintColors;
 
     Camera sceneCamera;
 
@@ -47,11 +52,12 @@ public class PlayerSetup : NetworkBehaviour
     public override void OnStartClient()
     {
         base.OnStartClient();
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
 
-        string netId = GetComponent<NetworkIdentity>().netId.ToString();
+        string netId = objects.Length.ToString();
         PlayerController player = GetComponent<PlayerController>();
-
-        GameManager.RegisterPlayer(netId, player);
+        c = TintColors[objects.Length - 1];
+        GameManager.RegisterPlayer(netId, player, c);
     }
 
     private void OnDisable()

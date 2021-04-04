@@ -7,10 +7,11 @@ public class GameManager : MonoBehaviour
 
     private static Dictionary<string, PlayerController> players = new Dictionary<string, PlayerController>();
 
-    public static void RegisterPlayer(string netID, PlayerController player)
+    public static void RegisterPlayer(string netID, PlayerController player, Color c)
     {
         string playerId = playerIdPrefix + " " + netID;
         players.Add(playerId, player);
+        player.mesh.material.color = c;
         player.transform.name = playerId;
         Debug.Log(playerId);
     }
