@@ -112,9 +112,9 @@ GameObject:
   - component: {fileID: -8854283291353521385}
   - component: {fileID: -204949053612730323}
   - component: {fileID: 6741956282715546325}
+  - component: {fileID: -5741177940946843334}
   - component: {fileID: 5877721279408669299}
   - component: {fileID: -8810823532768146076}
-  - component: {fileID: -5741177940946843334}
   - component: {fileID: 1239022655981264655}
   - component: {fileID: 1017911550416093210}
   m_Layer: 0
@@ -394,6 +394,27 @@ MonoBehaviour:
   jumpForce: 40000
   jointSpring: 20
   jointMaxForce: 50
+--- !u!114 &-5741177940946843334
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 718672729280061200}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8ebfbfbaefaf1e24692b11494c44f257, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  disableOnDeath:
+  - {fileID: -8810823532768146076}
+  - {fileID: 6741956282715546325}
+  - {fileID: 718672729280061163}
+  - {fileID: 1017911550416093210}
+  respawnTime: 6
+  sceneCamera: {fileID: 0}
 --- !u!114 &5877721279408669299
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -438,27 +459,6 @@ MonoBehaviour:
     type: 3}
   rightHandColliderComponent: {fileID: 8301068284540532722}
   LeftHandboxColliderComponent: {fileID: 5632515407404216995}
---- !u!114 &-5741177940946843334
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 718672729280061200}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8ebfbfbaefaf1e24692b11494c44f257, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  syncMode: 0
-  syncInterval: 0.1
-  disableOnDeath:
-  - {fileID: -8810823532768146076}
-  - {fileID: 6741956282715546325}
-  - {fileID: 718672729280061163}
-  - {fileID: 1017911550416093210}
-  model: {fileID: 6594027397676447314}
-  respawnTime: 6
 --- !u!114 &1239022655981264655
 MonoBehaviour:
   m_ObjectHideFlags: 0

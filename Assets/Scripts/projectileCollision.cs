@@ -16,8 +16,9 @@ public class projectileCollision : NetworkBehaviour
     private float respawnTime = 6f;
 
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
+        sceneCamera = Camera.main;
         controller = GetComponent<PlayerController>();
     }
 

@@ -114,13 +114,12 @@ public class RoundEnding : NetworkBehaviour
             Destroy(objects[i]);
     }
 
-    [ClientRpc]
     void RestartRound()
     {
         if (SceneManager.GetActiveScene().buildIndex == sceneNumbers)
-            SceneManager.LoadScene(1);
+            NetworkManager.singleton.ServerChangeScene("level" + 1);
         else
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex + 1);
+            NetworkManager.singleton.ServerChangeScene("level" + (SceneManager.GetActiveScene().buildIndex + 1));
         Debug.Log("Restarting the round");
         //StartRound();
     }
