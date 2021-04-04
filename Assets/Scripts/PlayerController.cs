@@ -162,6 +162,11 @@ public class PlayerController : MonoBehaviour
         return deathNumber;
     }
 
+    public string GetPlayerName()
+    {
+        return gameObject.name;
+    }
+
     public void addDeath()
     {
         deathNumber++;
