@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Mirror;
 
+[RequireComponent(typeof(PlayerSetup))]
 public class projectileCollision : NetworkBehaviour
 {
 
@@ -14,6 +15,9 @@ public class projectileCollision : NetworkBehaviour
 
     [SerializeField]
     private float respawnTime = 6f;
+
+    [SerializeField]
+    private Camera cam;
 
     // Start is called before the first frame update
     void Awake()
@@ -49,12 +53,17 @@ public class projectileCollision : NetworkBehaviour
 
     private void KillPlayer()
     {
+        cam.gameObject.SetActive(false);
+        GetComponent<PlayerSetup>().ActivateSceneCamera();
+
         for (int i = 0; i < disableOnDeath.Length; i++)
             disableOnDeath[i].enabled = false;
 
         Collider col = GetComponent<Collider>();
         if (col != null)
             col.enabled = false;
+
+        transform.position = new Vector3(2000, 0, 0);
 
         StartCoroutine(RespawnDelay());
     }
@@ -71,6 +80,9 @@ public class projectileCollision : NetworkBehaviour
 
     public void RespawnPlayer()
     {
+        GetComponent<PlayerSetup>().DeactivateSceneCamera();
+        cam.gameObject.SetActive(true);
+
         for (int i = 0; i < disableOnDeath.Length; i++)
             disableOnDeath[i].enabled = wasEnabledOnStart[i];
 

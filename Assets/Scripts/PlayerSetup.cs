@@ -65,4 +65,20 @@ public class PlayerSetup : NetworkBehaviour
 
         GameManager.UnregisterPlayer(transform.name);
     }
+
+    public void ActivateSceneCamera()
+    {
+        if(sceneCamera != null)
+        {
+            sceneCamera.gameObject.SetActive(true);
+        }
+    }
+
+    public void DeactivateSceneCamera()
+    {
+        if(sceneCamera != null)
+        {
+            sceneCamera.gameObject.SetActive(false);
+        }
+    }
 }

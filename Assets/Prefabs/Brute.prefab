@@ -414,6 +414,7 @@ MonoBehaviour:
   - {fileID: 718672729280061163}
   - {fileID: 1017911550416093210}
   respawnTime: 6
+  cam: {fileID: 2147715911369091888}
 --- !u!114 &5877721279408669299
 MonoBehaviour:
   m_ObjectHideFlags: 0
