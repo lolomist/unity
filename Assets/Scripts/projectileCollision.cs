@@ -18,7 +18,6 @@ public class projectileCollision : NetworkBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        sceneCamera = Camera.main;
         controller = GetComponent<PlayerController>();
     }
 
