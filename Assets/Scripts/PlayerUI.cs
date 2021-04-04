@@ -15,7 +15,7 @@ public class PlayerUI : MonoBehaviour
         controller = _controller;
     }
 
-    private void Update()
+    public void Update()
     {
         SetScore(controller.GetScore());
     }

@@ -450,6 +450,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8ebfbfbaefaf1e24692b11494c44f257, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
+  disableOnDeath:
+  - {fileID: -8810823532768146076}
+  - {fileID: 6741956282715546325}
+  - {fileID: 718672729280061163}
+  - {fileID: 1017911550416093210}
+  model: {fileID: 6594027397676447314}
+  respawnTime: 6
 --- !u!114 &1239022655981264655
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -464,10 +473,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  roundTime: 15
+  roundTime: 30
   WinScreenTime: 10
   WinUIPrefab: {fileID: 3169031592949543024, guid: a0d90503bc6253148860fa5cdcf684c0,
     type: 3}
+  sceneNumbers: 2
 --- !u!114 &1017911550416093210
 MonoBehaviour:
   m_ObjectHideFlags: 0

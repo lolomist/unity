@@ -40,6 +40,8 @@ public class PlayerSetup : NetworkBehaviour
             else
                 ui.SetController(GetComponent<PlayerController>());
         }
+
+        GetComponent<projectileCollision>().Setup();
     }
 
     public override void OnStartClient()
