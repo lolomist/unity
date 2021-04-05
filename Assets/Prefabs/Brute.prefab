@@ -199,6 +199,7 @@ ConfigurableJoint:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 718672729280061200}
   m_ConnectedBody: {fileID: 0}
+  m_ConnectedArticulationBody: {fileID: 0}
   m_Anchor: {x: 0, y: 0, z: 0}
   m_Axis: {x: 1, y: 0, z: 0}
   m_AutoConfigureConnectedAnchor: 1
@@ -487,7 +488,7 @@ MonoBehaviour:
   WinScreenTime: 10
   WinUIPrefab: {fileID: 3169031592949543024, guid: a0d90503bc6253148860fa5cdcf684c0,
     type: 3}
-  sceneNumbers: 2
+  sceneNumbers: 3
 --- !u!114 &1017911550416093210
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1682,6 +1683,7 @@ SkinnedMeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_RayTracingMode: 0
+  m_RayTraceProcedural: 0
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
