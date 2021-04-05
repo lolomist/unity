@@ -81,7 +81,6 @@ public class PlayerShoot : NetworkBehaviour
         projectil.GetComponent<Rigidbody>().AddForce(cam.transform.forward * projectileSpeed);
     }
 
-    [Client]
     private void Attack()
     {
         if(!isLocalPlayer) {

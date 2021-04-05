@@ -369,7 +369,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   cam: {fileID: 2147715911369091888}
-  projectile: {fileID: 0}
+  projectile: {fileID: 7332126655846779270, guid: 324d7f661e9b5404ca22ab044c143fe7,
+    type: 3}
 --- !u!114 &6741956282715546325
 MonoBehaviour:
   m_ObjectHideFlags: 0
