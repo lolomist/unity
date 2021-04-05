@@ -484,11 +484,11 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  roundTime: 45
+  roundTime: 120
   WinScreenTime: 10
   WinUIPrefab: {fileID: 3169031592949543024, guid: a0d90503bc6253148860fa5cdcf684c0,
     type: 3}
-  sceneNumbers: 3
+  sceneNumbers: 4
 --- !u!114 &1017911550416093210
 MonoBehaviour:
   m_ObjectHideFlags: 0
