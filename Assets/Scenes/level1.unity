@@ -1974,7 +1974,7 @@ GameObject:
   - component: {fileID: 689628290}
   - component: {fileID: 689628289}
   - component: {fileID: 689628288}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: obstacle 7 (10)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -3971,7 +3971,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1743980864}
   - component: {fileID: 1743980865}
-  m_Layer: 9
+  m_Layer: 8
   m_Name: Obstacles
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4398,7 +4398,7 @@ GameObject:
   - component: {fileID: 1988358475}
   - component: {fileID: 1988358474}
   - component: {fileID: 1988358473}
-  m_Layer: 8
+  m_Layer: 0
   m_Name: obstacle 7 (11)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -4873,7 +4873,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 2140869393}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Sols
   m_TagString: Untagged
   m_Icon: {fileID: 0}
