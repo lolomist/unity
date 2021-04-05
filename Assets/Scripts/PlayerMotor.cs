@@ -1,7 +1,8 @@
 ﻿using UnityEngine;
+using Mirror;
 
 [RequireComponent(typeof(Rigidbody))]
-public class PlayerMotor : MonoBehaviour
+public class PlayerMotor : NetworkBehaviour
 {
     public Camera cam;
 
@@ -50,8 +51,8 @@ public class PlayerMotor : MonoBehaviour
     {
         if(velocity != Vector3.zero)
         {
-            //rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
-            rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
+            rb.MovePosition(rb.position + velocity * Time.fixedDeltaTime);
+            //rb.velocity = new Vector3(velocity.x, rb.velocity.y, velocity.z);
         }
 
         if (jumpVelocity != Vector3.zero)
