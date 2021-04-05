@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.37311953, g: 0.38074014, b: 0.3587274, a: 1}
+  m_IndirectSpecularColor: {r: 0.43740344, g: 0.48520392, b: 0.56547713, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1297,13 +1297,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 305753475}
-  m_LocalRotation: {x: 0.1593007, y: -0.6806819, z: 0.69796866, w: 0.15535523}
-  m_LocalPosition: {x: -0.09, y: 87.92, z: -40.15}
+  m_LocalRotation: {x: 0.16236295, y: -0.6666473, z: 0.7113856, w: 0.15215202}
+  m_LocalPosition: {x: -0.09000015, y: 87.92, z: -40.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 557602120}
   m_RootOrder: 80
-  m_LocalEulerAnglesHint: {x: -268.563, y: 205.713, z: 0}
+  m_LocalEulerAnglesHint: {x: -266.281, y: 205.713, z: 0}
 --- !u!108 &305753477
 Light:
   m_ObjectHideFlags: 0
@@ -1316,13 +1316,13 @@ Light:
   m_Type: 0
   m_Shape: 0
   m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_Intensity: 4
+  m_Intensity: 20
   m_Range: 100
   m_SpotAngle: 179
   m_InnerSpotAngle: 9
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
     m_Strength: 1
@@ -3738,13 +3738,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 915476882}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: -0.64171284, y: -0.092430145, z: 0.07832087, w: -0.7573158}
+  m_LocalPosition: {x: 1.1999998, y: 70, z: 4.8}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 1804317106}
   m_RootOrder: 8
-  m_LocalEulerAnglesHint: {x: 50, y: -30, z: 0}
+  m_LocalEulerAnglesHint: {x: -279.447, y: 13.917, z: 0}
 --- !u!108 &915476884
 Light:
   m_ObjectHideFlags: 0
@@ -3763,10 +3763,10 @@ Light:
   m_InnerSpotAngle: 21.80208
   m_CookieSize: 10
   m_Shadows:
-    m_Type: 0
+    m_Type: 2
     m_Resolution: -1
     m_CustomResolution: -1
-    m_Strength: 1
+    m_Strength: 0.62
     m_Bias: 0.05
     m_NormalBias: 0.4
     m_NearPlane: 0.2
