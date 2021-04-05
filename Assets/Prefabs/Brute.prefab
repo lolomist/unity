@@ -368,6 +368,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e9742cba38e87f14f8fd1daa69cfd20d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  syncMode: 0
+  syncInterval: 0.1
   cam: {fileID: 2147715911369091888}
   projectile: {fileID: 7332126655846779270, guid: 324d7f661e9b5404ca22ab044c143fe7,
     type: 3}
@@ -383,7 +385,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 96755949e1eb1584aa4e0431681e3e3b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  speed: 10
+  speed: 50
   mouseSensitivityX: 10
   mouseSensitivityY: 8
   animator: {fileID: 718672729280061163}
@@ -485,7 +487,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
-  roundTime: 120
+  roundTime: 12
   WinScreenTime: 10
   WinUIPrefab: {fileID: 3169031592949543024, guid: a0d90503bc6253148860fa5cdcf684c0,
     type: 3}

@@ -126,7 +126,7 @@ public class PlayerController : MonoBehaviour
 
     private void Run()
     {
-        speed = 12f;
+        speed = 10f;
         animator.SetBool("Moving", true);
         animator.SetFloat("Velocity", 1f);
     }
