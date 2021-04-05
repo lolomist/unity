@@ -18,7 +18,7 @@ public class RoundEnding : NetworkBehaviour
     private GameObject WinUIInstance;
 
     [SerializeField]
-    private int sceneNumbers = 2;
+    private int sceneNumbers = 3;
 
     // Start is called before the first frame update
     void Start()
